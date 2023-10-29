@@ -31,14 +31,10 @@ def index():
 
 @bp.route('/download/<path:filename>', methods=['GET', 'POST'])
 def download(filename):
-    print(filename)
     base_dir = os.getcwd()
-    print(base_dir)
     upload_dir = os.path.join(base_dir, 'uploads')
-    print(upload_dir)
     os.makedirs(upload_dir, exist_ok=True)
     file_path = os.path.join(upload_dir, filename)
-    print(file_path)
     return send_file(file_path, as_attachment=True)
 
 
@@ -116,14 +112,10 @@ def total_page(driver, search_query, pages_to_scrape):
 
 
 def write_to_csv(links, filename):
-    print(filename)
     base_dir = os.getcwd()
-    print(base_dir)
     upload_dir = os.path.join(base_dir, 'uploads')
-    print(upload_dir)
     os.makedirs(upload_dir, exist_ok=True)
     file_path = os.path.join(upload_dir, filename)
-    print(file_path)
     with open(file_path, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         writer.writerow(['Image Source', 'Name', 'Link'])
