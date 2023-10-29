@@ -3,27 +3,63 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}{% endblock %} - Linkedex</title>
+    <title>Linkedex</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
+    <link
+      rel="stylesheet"
+      href="https://app.deepthought.education/assets/styles.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+    />
   </head>
   <body>
-    <div class="container">
-      <h2>Fetch the LinkedIn profile</h2>
-      <form method="post">
-        <label for="linkedinCookie">Cookie</label>
-        <input name="linkedinCookie" id="linkedinCookie" required />
-        <label for="searchItem">Search</label>
-        <input name="searchItem" id="searchItem" required />
-        <input type="submit" value="Search" />
-      </form>
-      <ul>
-        {% for link in links %}
-        <li><a href="{{ link }}" target="_blank">{{ link }}</a></li>
-        {% endfor %}
-      </ul>
+    <div class="full-width-container">
+      <div class="container">
+        <header>
+          <h2 class="text-center">LinkedEx</h2>
+          <p>Scrape Linkedin profiles just like that</p>
+        </header>
+        <div class="form-container">
+          <div class="card">
+            <form method="post">
+              <label for="linkedinCookie">Cookie</label>
+              <input name="linkedinCookie" id="linkedinCookie" required />
+              <small class="text-body-secondary">Put li_at cookie here</small>
+              <label for="searchItem">Search query</label>
+              <input name="searchItem" id="searchItem" required />
+              <button class="button-primary" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
+          {% for image_src, name, link in links %}
+          <div class="col">
+            <div class="card mb-3" style="max-width: 540px">
+              <div class="row g-0">
+                <div class="col-md-4">
+                  <img
+                    src="{{ image_src }}"
+                    class="img-fluid rounded-start"
+                    alt="{{ name }}"
+                  />
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ name }}</h5>
+                    <a href="{{ link }}">View profile</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
     </div>
   </body>
 </html>

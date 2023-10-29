@@ -1,8 +1,5 @@
-from flask import Flask, render_template, request
+from flask import render_template, request
 from flask import Blueprint
-
-import datetime
-import csv
 from tqdm import tqdm
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -29,7 +26,7 @@ def index():
 def scrape_links(search_query, li_at):
     links = []
     page = 1
-    total_pages = 4  # Set the total pages to 4
+    total_pages = 1  # Set the total pages to 4
 
     options = Options()
     options.add_argument('--headless')
@@ -51,13 +48,15 @@ def scrape_links(search_query, li_at):
     total_page(driver, search_query, total_pages)
 
     for i in tqdm(range(total_pages)):
-        spans = fetch(driver, page, search_query).findAll(
-            'span', class_='entity-result__title-text')
-        for span in spans:
-            a_tag = span.find('a')
-            if a_tag:
-                link = a_tag.get('href')
-                links.append(link)
+        soup = fetch(driver, page, search_query)
+        lists = soup.findAll(
+            'li', class_='reusable-search__result-container')
+        for list in lists:
+            image_src = list.find(
+                'img', class_='presence-entity__image')['src']
+            name = list.find('img', class_='presence-entity__image')['alt']
+            link = list.find('a', class_='app-aware-link')['href']
+            links.append((image_src, name, link))
         page += 1
 
     driver.quit()
@@ -84,14 +83,3 @@ def total_page(driver, search_query, total_pages):
         last_page = last_li[-1]
         attribute_value = last_page.get('data-test-pagination-page-btn')
         total_pages = min(int(attribute_value), total_pages)
-
-
-def write_to_csv(links, search_query):
-    print(f"Writing links to CSV for {search_query}")
-    current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    filename = f'linkedin-links_{search_query}_{current_time}.csv'
-    with open(filename, 'w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(["Links"])
-        for link in links:
-            writer.writerow([link])
