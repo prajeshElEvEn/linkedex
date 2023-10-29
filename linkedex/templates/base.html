@@ -1,23 +1,29 @@
 <!DOCTYPE html>
-<title>{% block title %}{% endblock %} - Flaskr</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-<nav>
-  <h1>App</h1>
-  <ul>
-    {% if g.user %}
-    <li><span>{{ g.user['username'] }}</span></li>
-    <li><a href="{{ url_for('auth.logout') }}">Log Out</a> {% else %}</li>
-
-    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-    <li>
-      <a href="{{ url_for('auth.login') }}">Log In</a>
-      {% endif %}
-    </li>
-  </ul>
-</nav>
-<section class="content">
-  <header>{% block header %}{% endblock %}</header>
-  {% for message in get_flashed_messages() %}
-  <div class="flash">{{ message }}</div>
-  {% endfor %} {% block content %}{% endblock %}
-</section>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock %} - Linkedex</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Fetch the LinkedIn profile</h2>
+      <form method="post">
+        <label for="linkedinCookie">Cookie</label>
+        <input name="linkedinCookie" id="linkedinCookie" required />
+        <label for="searchItem">Search</label>
+        <input name="searchItem" id="searchItem" required />
+        <input type="submit" value="Search" />
+      </form>
+      <ul>
+        {% for link in links %}
+        <li>{{ link }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>
