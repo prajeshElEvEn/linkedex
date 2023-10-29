@@ -38,7 +38,7 @@ pip install -r requirements.txt
 
 - Run flask app in debug mode
 
-```
+```python
 flask --app linkedex run --debug
 ```
 

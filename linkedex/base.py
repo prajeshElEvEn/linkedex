@@ -6,6 +6,9 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import time
+import os
+import csv
+from flask import send_file
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -20,8 +23,19 @@ def index():
         pages_to_scrape = int(request.form['pagesToScrape'])
         print(f"Scraping links for {search_query} with cookie {li_at}")
         links = scrape_links(search_query, li_at, pages_to_scrape)
-        return render_template('base.html', links=links)
+        filename = 'data.csv'
+        write_to_csv(links, filename)
+        return render_template('base.html', links=links, filename=filename)
     return render_template('base.html', links=[])
+
+
+@bp.route('/download/<path:filename>', methods=['GET', 'POST'])
+def download(filename):
+    base_dir = os.getcwd()
+    upload_dir = os.path.join(base_dir, 'uploads')
+    os.makedirs(upload_dir, exist_ok=True)
+    file_path = os.path.join(upload_dir, filename)
+    return send_file(file_path, as_attachment=True)
 
 
 def scrape_links(search_query, li_at, pages_to_scrape):
@@ -95,3 +109,15 @@ def total_page(driver, search_query, pages_to_scrape):
         last_page = last_li[-1]
         attribute_value = last_page.get('data-test-pagination-page-btn')
         pages_to_scrape = min(int(attribute_value), pages_to_scrape)
+
+
+def write_to_csv(links, filename):
+    base_dir = os.getcwd()
+    upload_dir = os.path.join(base_dir, 'uploads')
+    os.makedirs(upload_dir, exist_ok=True)
+    file_path = os.path.join(upload_dir, filename)
+    with open(file_path, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Image Source', 'Name', 'Link'])
+        for link in links:
+            writer.writerow(link)

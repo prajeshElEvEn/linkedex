@@ -50,7 +50,16 @@
               <button class="button-primary" type="submit">Search</button>
             </form>
           </div>
+          {% if links|length > 0 %}
+          <a
+            href="{{ url_for('base.download', filename=filename) }}"
+            class="button-primary"
+            role="button"
+            >Download as CSV</a
+          >
+          {% endif %}
         </div>
+
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
           {% for image_src, name, link in links %}
           <div class="col">
