@@ -23,7 +23,7 @@ def index():
         pages_to_scrape = int(request.form['pagesToScrape'])
         print(f"Scraping links for {search_query} with cookie {li_at}")
         links = scrape_links(search_query, li_at, pages_to_scrape)
-        filename = f'linkedin-links_{search_query}.csv'
+        filename = 'data.csv'
         write_to_csv(links, filename)
         return render_template('base.html', links=links, filename=filename)
     return render_template('base.html', links=[])
