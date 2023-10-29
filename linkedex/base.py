@@ -17,16 +17,16 @@ def index():
     if request.method == 'POST':
         search_query = request.form['searchItem']
         li_at = request.form['linkedinCookie']
+        pages_to_scrape = int(request.form['pagesToScrape'])
         print(f"Scraping links for {search_query} with cookie {li_at}")
-        links = scrape_links(search_query, li_at)
+        links = scrape_links(search_query, li_at, pages_to_scrape)
         return render_template('base.html', links=links)
     return render_template('base.html', links=[])
 
 
-def scrape_links(search_query, li_at):
+def scrape_links(search_query, li_at, pages_to_scrape):
     links = []
     page = 1
-    total_pages = 1  # Set the total pages to 4
 
     options = Options()
     options.add_argument('--headless')
@@ -44,20 +44,32 @@ def scrape_links(search_query, li_at):
     driver.get("https://www.linkedin.com")
     driver.add_cookie(cookies)
 
-    # Pass total_pages as an argument
-    total_page(driver, search_query, total_pages)
+    # Pass pages_to_scrape as an argument
+    total_page(driver, search_query, pages_to_scrape)
 
-    for i in tqdm(range(total_pages)):
+    for i in tqdm(range(pages_to_scrape)):
         soup = fetch(driver, page, search_query)
-        lists = soup.findAll(
-            'li', class_='reusable-search__result-container')
+        lists = soup.findAll('li', class_='reusable-search__result-container')
         for list in lists:
-            image_src = list.find(
-                'img', class_='presence-entity__image')['src']
-            name = list.find('img', class_='presence-entity__image')['alt']
-            link = list.find('a', class_='app-aware-link')['href']
-            links.append((image_src, name, link))
-        page += 1
+            try:
+                image = list.find(
+                    'img', class_='presence-entity__image')['src']
+            except (AttributeError, TypeError):
+                image = ""
+            try:
+                alt_tag = list.find('img', class_='presence-entity__image')
+                alt = alt_tag.get('alt') if alt_tag else ""
+            except (AttributeError, TypeError):
+                alt = ""
+            try:
+                href_tag = list.find('a', class_='app-aware-link')
+                href = href_tag.get('href') if href_tag else ""
+            except (AttributeError, TypeError):
+                href = ""
+            if image and alt and href:
+                link_item = (image, alt, href)
+                links.append(link_item)
+            page += 1
 
     driver.quit()
     return links
@@ -73,7 +85,7 @@ def fetch(driver, page, search_query):
     return BeautifulSoup(html, "lxml")
 
 
-def total_page(driver, search_query, total_pages):
+def total_page(driver, search_query, pages_to_scrape):
     print(f"Getting total pages for {search_query}")
 
     soup = fetch(driver, 1, search_query)
@@ -82,4 +94,4 @@ def total_page(driver, search_query, total_pages):
     if last_li:
         last_page = last_li[-1]
         attribute_value = last_page.get('data-test-pagination-page-btn')
-        total_pages = min(int(attribute_value), total_pages)
+        pages_to_scrape = min(int(attribute_value), pages_to_scrape)

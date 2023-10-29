@@ -28,10 +28,25 @@
           <div class="card">
             <form method="post">
               <label for="linkedinCookie">Cookie</label>
-              <input name="linkedinCookie" id="linkedinCookie" required />
+              <input
+                type="text"
+                name="linkedinCookie"
+                id="linkedinCookie"
+                required
+              />
               <small class="text-body-secondary">Put li_at cookie here</small>
               <label for="searchItem">Search query</label>
-              <input name="searchItem" id="searchItem" required />
+              <input type="text" name="searchItem" id="searchItem" required />
+              <label for="pagesToScrape">Pages to scrape</label>
+              <input
+                type="number"
+                name="pagesToScrape"
+                id="pagesToScrape"
+                required
+              />
+              <small class="text-body-secondary"
+                >1 page equals 6-8 profiles(approx.)</small
+              >
               <button class="button-primary" type="submit">Search</button>
             </form>
           </div>
@@ -51,7 +66,7 @@
                 <div class="col-md-8">
                   <div class="card-body">
                     <h5 class="card-title">{{ name }}</h5>
-                    <a href="{{ link }}">View profile</a>
+                    <a href="{{ link }}" target="_blank">View profile</a>
                   </div>
                 </div>
               </div>

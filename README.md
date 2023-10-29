@@ -1,9 +1,19 @@
 # Linkedex
 
-- to initialize db
+A linkedin scraper integrated with flask that scrapes user profiles based on search query.
 
+## Installation
+
+- Fork the repo and then clone it
+
+```bash
+git clone <repo_url>
 ```
-flask --app linkedex init-db
+
+- Navigate into project directory
+
+```bash
+cd linkedex
 ```
 
 - to run app
