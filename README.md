@@ -48,3 +48,5 @@ flask --app linkedex run --debug
 - [Selenium](https://www.selenium.dev/documentation/webdriver/)
 - [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
 - [Bootstrap](https://getbootstrap.com/)
+
+> Special thanks to [@fardin](https://github.com/fardinkamal62) for his linkedin scraper code.
